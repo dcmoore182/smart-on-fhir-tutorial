@@ -32,6 +32,8 @@
           var monthIndex = dob.getMonth() + 1;
           var year = dob.getFullYear();
 
+          var mrn=patient.identifier.find(i=>i.type.text=="MRN").value;
+
           var dobStr = monthIndex + '/' + day + '/' + year;
           var fname = '';
           var lname = '';
