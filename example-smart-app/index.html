@@ -19,6 +19,14 @@
     <div id='holder' >
       <h2>Example-SMART-App</h2>
 
+
+      <h2>Current user</h2>
+      <table>
+        <tr>
+          <th>login:</th>
+          <td id='userlogin'></td>
+        </tr>
+      </table>
       <h2>Patient Resource</h2>
       <table>
         <tr>
@@ -59,11 +67,6 @@
     <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
-
-
-
-
-       // drawVisualization(p);
 
       extractData().then(
         //Display Patient Demographics and Observations if extractData was success

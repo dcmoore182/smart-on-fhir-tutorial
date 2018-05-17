@@ -10,6 +10,7 @@
       function onReady(smart)  {
           if (smart.hasOwnProperty('patient')) {
               var patient = smart.patient;
+              var userName= smart.tokenResponse.username;
               var pt = patient.read();
 
               var obv = smart.patient.api.fetchAll({
@@ -25,7 +26,7 @@
 
               $.when(pt, obv).fail(onError);
 
-              $.when(pt, obv).done(function(patient, obv) {
+              $.when(pt, obv, userName).done(function(patient, obv, user) {
                   var gender = patient.gender;
                   var dob = new Date(patient.birthDate);
                   var day = dob.getDate();
@@ -51,6 +52,7 @@
                   p.fname = fname;
                   p.lname = lname;
                   p.mrn=mrn;
+                  p.userlogin=user;
 
 
                   ret.resolve(p);
@@ -74,57 +76,13 @@
       gender: {value: ''},
       birthdate: {value: ''},
       mrn: {value: ''},
+        userlogin: {value: ''},
     };
   }
 
-  function getBloodPressureValue(BPObservations, typeOfPressure) {
-    var formattedBPObservations = [];
-    BPObservations.forEach(function(observation){
-      var BP = observation.component.find(function(component){
-        return component.code.coding.find(function(coding) {
-          return coding.code == typeOfPressure;
-        });
-      });
-      if (BP) {
-        observation.valueQuantity = BP.valueQuantity;
-        formattedBPObservations.push(observation);
-      }
-    });
 
-    return getQuantityValueAndUnit(formattedBPObservations[0]);
-  }
 
-  function isLeapYear(year) {
-    return new Date(year, 1, 29).getMonth() === 1;
-  }
 
-  function calculateAge(date) {
-    if (Object.prototype.toString.call(date) === '[object Date]' && !isNaN(date.getTime())) {
-      var d = new Date(date), now = new Date();
-      var years = now.getFullYear() - d.getFullYear();
-      d.setFullYear(d.getFullYear() + years);
-      if (d > now) {
-        years--;
-        d.setFullYear(d.getFullYear() - 1);
-      }
-      var days = (now.getTime() - d.getTime()) / (3600 * 24 * 1000);
-      return years + days / (isLeapYear(now.getFullYear()) ? 366 : 365);
-    }
-    else {
-      return undefined;
-    }
-  }
-
-  function getQuantityValueAndUnit(ob) {
-    if (typeof ob != 'undefined' &&
-        typeof ob.valueQuantity != 'undefined' &&
-        typeof ob.valueQuantity.value != 'undefined' &&
-        typeof ob.valueQuantity.unit != 'undefined') {
-          return ob.valueQuantity.value + ' ' + ob.valueQuantity.unit;
-    } else {
-      return undefined;
-    }
-  }
 
   window.drawVisualization = function(p) {
       $('#holder').show();
@@ -134,6 +92,8 @@
       $('#gender').html(p.gender);
       $('#birthdate').html(p.birthdate);
       $('#mrn').html(p.mrn);
+      $('#userlogin').html(p.userlogin);
+
   };
 
 })(window);
