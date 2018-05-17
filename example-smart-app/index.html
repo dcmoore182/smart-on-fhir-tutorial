@@ -38,34 +38,11 @@
           <td id='birthdate'></td>
         </tr>
         <tr>
-          <th>Age:</th>
-          <td id='age'></td>
+          <th>MRN:</th>
+          <td id='mrn'></td>
         </tr>
       </table>
-      <h2>Observation Resource</h2>
-      <table>
-        <tr>
-          <th>Height:</th>
-          <td id='height'></td>
-        </tr>
-        <tr>
-          <th>Systolic Blood Pressure:</th>
-          <td id='systolicbp'></td>
 
-        </tr>
-        <tr>
-          <th>Diastolic Blood Pressure:</th>
-          <td id='diastolicbp'></td>
-        </tr>
-        <tr>
-          <th>LDL:</th>
-          <td id='ldl'></td>
-        </tr>
-        <tr>
-          <th>HDL:</th>
-          <td id='hdl'></td>
-        </tr>
-      </table>
     </div>
     <!-- Required JS files to enable this page to embed within an MPage -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.26.0/polyfill.min.js'></script>
@@ -82,6 +59,55 @@
     <script src='./lib/js/fhir-client-cerner-additions-1.0.0.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>
+        function defaultPatient(){
+            return {
+                fname: {value: ''},
+                lname: {value: ''},
+                gender: {value: ''},
+                birthdate: {value: ''},
+                mrn: {value: ''},
+            };
+        }
+
+        var patient = smart.patient;
+        var gender = patient.gender;
+        var dob = new Date(patient.birthDate);
+        var day = dob.getDate();
+        var monthIndex = dob.getMonth() + 1;
+        var year = dob.getFullYear();
+
+        var mrn=patient.identifier.find(i=>i.type.text=="MRN").value;
+
+        var dobStr = monthIndex + '/' + day + '/' + year;
+        var fname = '';
+        var lname = '';
+
+        if (typeof patient.name[0] !== 'undefined') {
+            fname = patient.name[0].given.join(' ');
+            lname = patient.name[0].family.join(' ');
+        }
+
+
+
+        var p = defaultPatient();
+        p.birthdate = dobStr;
+        p.gender = gender;
+        p.fname = fname;
+        p.lname = lname;
+        p.mrn=mrn;
+
+        $('#holder').show();
+        $('#loading').hide();
+        $('#fname').html(p.fname);
+        $('#lname').html(p.lname);
+        $('#gender').html(p.gender);
+        $('#birthdate').html(p.birthdate);
+        $('#mrn').html(p.mrn);
+
+
+
+       // drawVisualization(p);
+        /*
       extractData().then(
         //Display Patient Demographics and Observations if extractData was success
         function(p) {
@@ -94,6 +120,7 @@
           $('#errors').html('<p> Failed to call FHIR Service </p>');
         }
       );
+      */
     </script>
   </body>
 </html>
